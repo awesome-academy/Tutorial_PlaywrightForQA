@@ -16,8 +16,8 @@ test('test', async ({ page }) => {
   await page.check('#newsletter');
   await  page.locator('.switch>.slider.round').click();
   await page.getByText('Register').click();
-  expect(page.locator('#male').isChecked);
-  expect(page.locator('#reading').isChecked);
-  expect(page.locator('#newsletter').isChecked);
+  await expect(await page.locator('#male').isChecked()).toBe(false);
+  await expect(await page.locator('#reading').isChecked()).toBe(false);
+  await expect(await page.locator('#newsletter').isChecked()).toBe(false);
   await expect(page.getByRole('cell',{ name : 'Tung Quan'})).toBeVisible()
 });
