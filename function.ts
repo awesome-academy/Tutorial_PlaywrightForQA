@@ -15,6 +15,7 @@ function greet(name: string, role: string="Guest"): string {
     return `Hello ${name}, your role is ${role}.`;
 }
 console.log(greet("Viet", "Admin"));
+
 //Function delay
 function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
