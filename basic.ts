@@ -1,27 +1,22 @@
 const username: string = "Huong";
 const age: number = 28;
-const isActive: boolean = true
+const isActive: boolean = true;
 const roles: string[] = ["Admin", "Member"];
-interface User {
-  name: string;
-  email: string;
-  isAdmin: boolean;
-}
-const user: User = {
-  name: "huonng",
-  email: "abc@gmail.com",
-  isAdmin: false,
+
+const user: { name: string; email: string; isAdmin: boolean } = {
+  name: "Huong",
+  email: "huong@example.com",
+  isAdmin: false
 };
-function checkAge(age: number) {
+
+console.log(`User: ${user.name} (email: ${user.email}), Roles: ${roles}, Active: ${isActive}`);
+
+function checkAge(age: number): void {
   if (age >= 18) {
     console.log("Adult");
   } else {
     console.log("Under 18");
   }
 }
-console.log(`User: ${user.name} (email: ${user.email})`);
-console.log(`Roles: ${roles}`);
-console.log(`Active: ${isActive}`);
 
-
-
+checkAge(age);
