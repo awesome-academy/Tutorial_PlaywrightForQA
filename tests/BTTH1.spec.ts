@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('test', async ({ page }) => {
+test('userRegistration', async ({ page }) => {
   await page.goto('https://material.playwrightvn.com/01-xpath-register-page.html');
   await page.locator('#username').fill('Tung Quan');
   await page.locator('#email').fill('tungquan123@gmail.com');
