@@ -32,10 +32,3 @@ test('methodWait', async ({ page }) => {
     expect(await page.locator('//*[@id="finish"]/h4')).toHaveText('Hello World!')
     await page.screenshot({path: 'image_test/submit_button.png'})
 });
-test('methodWait', async ({ page }) => {
-    await page.goto('https://the-internet.herokuapp.com/dynamic_loading/1');
-    await page.getByRole('button',{name : 'Start'}).click();
-    await page.waitForSelector('#loading',{ state: 'hidden' });
-    expect(await page.locator('//*[@id="finish"]/h4')).toHaveText('Hello World!')
-    await page.screenshot({path: 'image_test/submit_button.png'})
-});
