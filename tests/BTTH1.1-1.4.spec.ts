@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('checkURLPage', async ({ page }) => {
+test('BTTH1.1-1.4', async ({ page }) => {
     await page.goto('https://www.globalsqa.com/angularJs-protractor/registration-login-example/#/register');
     await expect(page.locator('//div[@class="container"]//h2')).toContainText('Register');
     await expect(page.locator('#firstName')).toBeVisible();

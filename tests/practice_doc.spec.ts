@@ -8,7 +8,6 @@ test('checkURLPage', async ({ page }) => {
     await page.waitForURL('**/inventory.html');
     await page.reload();
     await expect(page).toHaveURL(/inventory.html/);
-    // await page.close();
 });
 test('interactWithElement', async ({ page }) => {
     await page.goto('https://demoqa.com/automation-practice-form');
@@ -16,12 +15,8 @@ test('interactWithElement', async ({ page }) => {
     await page.getByRole('textbox',{name : 'Last Name'}).fill('Quan');
     await page.getByRole('textbox',{name : 'name@example.com'}).fill('quannguyen@gmail.com')
     await page.locator('//input[@value="Male"]').click({ force: true })
-    //await page.check('input[name="gender"][value="Female"]')
     await page.getByRole('textbox',{name : 'Mobile Number'}).fill('0987654321')
     await page.getByRole('checkbox',{name : 'Music'}).click({ force: true })
-    // await page.getByRole('heading',{name : 'DEMOQA'}).hover()
-    // const tooltip = page.getByRole('tooltip');
-    // console.log(await tooltip.textContent());
     await page.getByRole('button',{name : 'Submit'}).click()
     await expect(page.locator('.modal-content')).toBeVisible()
 });
