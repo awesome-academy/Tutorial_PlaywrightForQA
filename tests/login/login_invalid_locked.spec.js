@@ -7,5 +7,4 @@ test('test', async ({ page }) => {
     await expect(page.locator('[data-test="error"]')).toHaveText(
      'Epic sadface: Sorry, this user has been locked out.'
     );
-    
 });

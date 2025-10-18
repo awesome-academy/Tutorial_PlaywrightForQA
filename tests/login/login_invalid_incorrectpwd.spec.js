@@ -7,5 +7,4 @@ test('test', async ({ page }) => {
     await expect(page.locator('[data-test="error"]')).toHaveText(
      'Epic sadface: Username and password do not match any user in this service'
     );
-    
 });
