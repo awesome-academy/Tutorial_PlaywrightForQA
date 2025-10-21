@@ -5,5 +5,4 @@ test('test', async ({ page }) => {
     await page.getByRole('textbox',{name : 'Password'}).fill('secret_sauce')
     await page.getByRole('button', {name : 'Login'}).click()
     await expect(page.locator('.app_logo')).toBeVisible()
-
 });
