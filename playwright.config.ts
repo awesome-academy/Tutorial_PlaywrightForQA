@@ -21,7 +21,7 @@ export default defineConfig({
     // 👇 Hiển thị trình duyệt và làm chậm thao tác
     headless: false,
     launchOptions: {
-      slowMo: 600, // làm chậm mỗi thao tác 0.6 giây
+      slowMo: 1000, // làm chậm mỗi thao tác 0.6 giây
     },
   },
 
