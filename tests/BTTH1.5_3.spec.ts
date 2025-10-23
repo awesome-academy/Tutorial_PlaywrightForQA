@@ -1,4 +1,11 @@
 import { test, expect } from '@playwright/test';
+import path from 'path/win32';
+test.beforeAll('Print log before run code',({page})=>{
+    console.log('Start run Test case');
+})
+test.afterAll('Print log after run Test case',({page})=>{
+    console.log('Stop run Test case');
+})
 
 test.describe('Check product information',()=>{
     test.beforeEach('login site',async ({page})=>{
@@ -7,12 +14,20 @@ test.describe('Check product information',()=>{
         await page.locator('#password').fill('secret_sauce');
         await page.locator('#login-button').click();   
     })
-    test.afterEach('close site',async({page})=>{
-        // await page.close(); -- Không cần vì Fixture của Playwtight đã thực hiện tự động đóng browser khi không còn test nào nữa
+    test.afterEach('close site',async({page}, testInfo)=>{
+        console.log('=====AfterEach infor=====');
+        if(testInfo.status != testInfo.expectedStatus){
+            const screenShootPath = path.join('image_test', `${testInfo.title.replace(/\s+/g, '_')}.png`);
+            await page.screenshot({path:screenShootPath,fullPage: true});
+            console.log('=== Screen shot ===');
+
+        }
+        page.close();
+
     })
     test('Check quantity of item displays on homepage', async ({page})=>{
         const count = await page.locator('.inventory_item').count();
-        expect(count).toEqual(6);
+        expect(count).toEqual(7);
     })
     test('Check price of Sauce Labs Backpack', async ({page})=>{
         const backpack_inventory = await page.locator('.inventory_item',{ hasText: 'Sauce Labs Backpack' });
@@ -26,10 +41,15 @@ test.describe('Check product information',()=>{
         await page.locator('#password').fill('secret_sauce');
         await page.locator('#login-button').click();   
     })
-    test.afterEach('close site',async({page})=>{
-        await page.close(); //-- Không cần vì Fixture của Playwtight đã thực hiện tự động đóng browser khi không còn test nào nữa
-    })
+    test.afterEach('close site',async({page}, testInfo)=>{
+        console.log('=====AfterEach infor=====');
+        if(testInfo.status != testInfo.expectedStatus){
+            const screenShootPath = path.join('image_test', `${testInfo.title.replace(/\s+/g, '_')}.png`);
+            await page.screenshot({path:screenShootPath,fullPage: true});
+            console.log('=== Screen shot ===');
+        }
 
+    })
     test('Add to cart', async({page})=>{
         const backpackInventory = await page.locator('.inventory_item',{ hasText: 'Sauce Labs Backpack' });
         await backpackInventory.locator('button').click();

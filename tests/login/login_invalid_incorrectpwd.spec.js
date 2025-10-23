@@ -6,6 +6,5 @@ test('test', async ({ page }) => {
     await page.getByRole('button', {name : 'Login'}).click()
     await expect(page.locator('[data-test="error"]')).toHaveText(
      'Epic sadface: Username and password do not match any user in this service'
-    );
-    
+    );  
 });
