@@ -1,0 +1,100 @@
+# Dependencies# Dependencies
+
+node_modules/node_modules/
+
+package-lock.jsonpackage-lock.json
+
+yarn.lockyarn.lock
+
+pnpm-lock.yamlpnpm-lock.yaml
+
+
+
+# Playwright# Playwright
+
+test-results/test-results/
+
+playwright-report/playwright-report/
+
+blob-report/blob-report/
+
+playwright/.cache/playwright/.cache/
+
+
+
+# Screenshots and Videos# Screenshots and Videos
+
+screenshots/screenshots/
+
+videos/videos/
+
+
+
+# Environment variablestest-results
+
+.env
+
+.env.local# Environment variables
+
+.env.*.local.env
+
+.env.local
+
+# IDE.env.*.local
+
+.vscode/
+
+.idea/# IDE
+
+*.swp.vscode/
+
+*.swo.idea/
+
+*~*.swp
+
+.DS_Store*.swo
+
+*~
+
+# OS.DS_Store
+
+Thumbs.db
+
+.DS_Store# OS
+
+Thumbs.db
+
+# Build.DS_Store
+
+dist/
+
+build/# Build
+
+*.tsbuildinfodist/
+
+build/
+
+# Logs*.tsbuildinfo
+
+logs/
+
+*.log# Logs
+
+npm-debug.log*logs/
+
+yarn-debug.log**.log
+
+yarn-error.log*npm-debug.log*
+
+yarn-debug.log*
+
+# Miscyarn-error.log*
+
+.cache/
+
+temp/# Misc
+
+tmp/.cache/
+
+temp/
+tmp/
