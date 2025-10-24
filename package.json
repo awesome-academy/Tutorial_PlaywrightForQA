@@ -1,0 +1,15 @@
+{
+  "name": "playwright-qa-tutorial",
+  "version": "1.0.0",
+  "description": "Tutorial Playwright for QA",
+  "scripts": {
+    "test": "playwright test",
+    "test:auth": "playwright test auth.setup.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
