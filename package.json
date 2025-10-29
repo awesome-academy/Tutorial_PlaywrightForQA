@@ -1,0 +1,22 @@
+{
+  "name": "tutorial_playwrightforqa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoangpc-2519/Tutorial_PlaywrightForQA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoangpc-2519/Tutorial_PlaywrightForQA/issues"
+  },
+  "homepage": "https://github.com/hoangpc-2519/Tutorial_PlaywrightForQA#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.9.1"
+  }
+}
