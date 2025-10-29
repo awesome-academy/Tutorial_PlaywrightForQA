@@ -21,25 +21,28 @@ export default defineConfig({
     // 👇 Hiển thị trình duyệt và làm chậm thao tác
     headless: false,
     launchOptions: {
-      slowMo: 1000, // làm chậm mỗi thao tác 0.6 giây
+      slowMo: 1000, // làm chậm mỗi thao tác 1 giây
     },
   },
 
+  // ✅ Đã thêm setup project như yêu cầu
   projects: [
+    // Setup project để chạy .setup.ts files
     {
-      name: 'chromium',
+      name: 'setup',
+      testMatch: /.*\.setup\.ts$/,  // ✅ Nhận diện .setup.ts files
       use: { ...devices['Desktop Chrome'] },
     },
 
-    // Nếu muốn test thêm trình duyệt khác, bỏ comment phần dưới:
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    // Main test projects
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/user.json',  // ✅ Sử dụng auth state
+      },
+      dependencies: ['setup'],  // ✅ Chạy setup trước
+    },
   ],
 
   // Nếu sau này bạn có web local:
