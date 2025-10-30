@@ -1,26 +1,23 @@
-import { chromium } from 'playwright';  // <- sửa chỗ này
-import fs from 'fs';
-import path from 'path';
+import { chromium } from "@playwright/test";
+import fs from "fs";
+import path from "path";
 
 (async () => {
-  try {
-    const outDir = path.resolve('./tests/auth');
-    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+  const browser = await chromium.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.goto("https://www.saucedemo.com/");
+  await page.getByPlaceholder("Username").fill("standard_user");
+  await page.getByPlaceholder("Password").fill("secret_sauce");
+  await page.getByRole("button", { name: "Login" }).click();
 
-    const browser = await chromium.launch({ headless: false });
-    const context = await browser.newContext();
-    const page = await context.newPage();
+  console.log("✅ Login successful");
 
-    await page.goto('https://www.saucedemo.com/');
-    await page.getByPlaceholder('Username').fill('standard_user');
-    await page.getByPlaceholder('Password').fill('secret_sauce');
-    await page.getByRole('button', { name: 'Login' }).click();
+  const outDir = path.resolve("./tests/auth");
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-    await page.waitForURL(/inventory/);
-    await context.storageState({ path: path.join(outDir, 'auth.json') });
+  const storageStatePath = path.join(outDir, "auth.json");
+  await page.context().storageState({ path: storageStatePath });
 
-    await browser.close();
-  } catch (err) {
-    console.error("❌ Error:", err);
-  }
-})
+  console.log("💾 Save state login :", storageStatePath);
+  await browser.close();
+})();
