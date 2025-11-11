@@ -1,0 +1,55 @@
+// classes.ts
+
+// 1️⃣ Interface IUser
+interface IUser {
+  name: string;
+  email: string;
+  isAdmin: boolean;
+}
+
+// 2️⃣ Class User implements IUser
+class User implements IUser {
+  name: string;
+  email: string;
+  isAdmin: boolean;
+
+  constructor(name: string, email: string, isAdmin: boolean = false) {
+    this.name = name;
+    this.email = email;
+    this.isAdmin = isAdmin;
+  }
+
+  getInfo(): string {
+    return `User: ${this.name}, Email: ${this.email}, Admin: ${this.isAdmin}`;
+  }
+}
+
+// 3️⃣ Tạo instance và gọi getInfo()
+const user1 = new User("Binh", "binh@example.com");
+console.log(user1.getInfo());
+
+// 4️⃣ Class AdminUser kế thừa User
+class AdminUser extends User {
+  constructor(name: string, email: string) {
+    super(name, email, true);
+  }
+
+  deleteUser(user: User): void {
+    console.log(`Admin ${this.name} deleted user ${user.name}`);
+  }
+}
+
+// 5️⃣ Tạo instance AdminUser và mảng users
+const admin = new AdminUser("BinhHV", "admin@example.com");
+const user2 = new User("BinhHV1", "BinhHV1@example.com");
+const user3 = new User("BinhHV2", "BinhHV2@example.com");
+
+const users: User[] = [user1, user2, user3, admin];
+
+// 6️⃣in thông tin
+for (const u of users) {
+  console.log(u.getInfo());
+}
+
+// 7️⃣ Gọi  deleteUser từ admin
+admin.deleteUser(user2);
