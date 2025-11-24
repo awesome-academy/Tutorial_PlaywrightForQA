@@ -41,4 +41,13 @@ await expect(page).toHaveURL(loginpageurl);
 //Khai báo thẻ alert
 const thealert = page.locator('.alert-success');
 await expect(thealert).toHaveText('Registration successful');
+
+// Kiểm tra đăng nhập sau đăng ký
+await page.fill('#username',datauser.username);
+await page.fill('#password', datauser.password);
+await page.locator('.form-actions button').click();
+// Khai báo url sau khi đăng nhập
+const homepage = 'https://globalsqa.com/angularJs-protractor/registration-login-example/#/';
+await expect(page).toHaveURL(homepage);
+
 });
