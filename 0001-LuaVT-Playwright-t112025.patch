@@ -1,0 +1,838 @@
+From fb1b7d668eed4a8d363755427b27aa5aaa0f6d0c Mon Sep 17 00:00:00 2001
+From: luavt-2674 <vu.thi.lua@sun-asterisk.com>
+Date: Mon, 17 Nov 2025 10:55:06 +0700
+Subject: [PATCH] 'LuaVT-Playwright-t112025'
+
+---
+ .github/redme.mc                 |   0
+ .github/workflows/playwright.yml |  27 ++++++
+ .gitignore                       |   8 ++
+ Tutorial_PlaywrightForQA         |   1 +
+ package-lock.json                |  97 ++++++++++++++++++++
+ package.json                     |  15 ++++
+ page/loginPage.js                |   5 ++
+ playwright.config.ts             |  79 ++++++++++++++++
+ tests/BTTHnentang.spec.ts        |   8 ++
+ tests/Class.spec.ts              |  51 +++++++++++
+ tests/HTMLbasic.spec.ts          |  49 ++++++++++
+ tests/basic.spec.ts              |  57 ++++++++++++
+ tests/example.spec.ts            |  18 ++++
+ tests/function.spec.ts           |  21 +++++
+ tests/sauce.loin.spec.ts         |  60 +++++++++++++
+ tests/sauce.menu.spec.ts         | 149 +++++++++++++++++++++++++++++++
+ tests/test-1.spec.ts             |   6 ++
+ tests/thisPractice.spec.ts       |  29 ++++++
+ 18 files changed, 680 insertions(+)
+ create mode 100644 .github/redme.mc
+ create mode 100644 .github/workflows/playwright.yml
+ create mode 100644 .gitignore
+ create mode 160000 Tutorial_PlaywrightForQA
+ create mode 100644 package-lock.json
+ create mode 100644 package.json
+ create mode 100644 page/loginPage.js
+ create mode 100644 playwright.config.ts
+ create mode 100644 tests/BTTHnentang.spec.ts
+ create mode 100644 tests/Class.spec.ts
+ create mode 100644 tests/HTMLbasic.spec.ts
+ create mode 100644 tests/basic.spec.ts
+ create mode 100644 tests/example.spec.ts
+ create mode 100644 tests/function.spec.ts
+ create mode 100644 tests/sauce.loin.spec.ts
+ create mode 100644 tests/sauce.menu.spec.ts
+ create mode 100644 tests/test-1.spec.ts
+ create mode 100644 tests/thisPractice.spec.ts
+
+diff --git a/.github/redme.mc b/.github/redme.mc
+new file mode 100644
+index 0000000..e69de29
+diff --git a/.github/workflows/playwright.yml b/.github/workflows/playwright.yml
+new file mode 100644
+index 0000000..3eb1314
+--- /dev/null
++++ b/.github/workflows/playwright.yml
+@@ -0,0 +1,27 @@
++name: Playwright Tests
++on:
++  push:
++    branches: [ main, master ]
++  pull_request:
++    branches: [ main, master ]
++jobs:
++  test:
++    timeout-minutes: 60
++    runs-on: ubuntu-latest
++    steps:
++    - uses: actions/checkout@v4
++    - uses: actions/setup-node@v4
++      with:
++        node-version: lts/*
++    - name: Install dependencies
++      run: npm ci
++    - name: Install Playwright Browsers
++      run: npx playwright install --with-deps
++    - name: Run Playwright tests
++      run: npx playwright test
++    - uses: actions/upload-artifact@v4
++      if: ${{ !cancelled() }}
++      with:
++        name: playwright-report
++        path: playwright-report/
++        retention-days: 30
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..335bd46
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,8 @@
++
++# Playwright
++node_modules/
++/test-results/
++/playwright-report/
++/blob-report/
++/playwright/.cache/
++/playwright/.auth/
+diff --git a/Tutorial_PlaywrightForQA b/Tutorial_PlaywrightForQA
+new file mode 160000
+index 0000000..bd8f789
+--- /dev/null
++++ b/Tutorial_PlaywrightForQA
+@@ -0,0 +1 @@
++Subproject commit bd8f789a9c11c695148e9d5430953cdda5d95ad4
+diff --git a/package-lock.json b/package-lock.json
+new file mode 100644
+index 0000000..8c43fb9
+--- /dev/null
++++ b/package-lock.json
+@@ -0,0 +1,97 @@
++{
++  "name": "playwrigh-luavt",
++  "version": "1.0.0",
++  "lockfileVersion": 3,
++  "requires": true,
++  "packages": {
++    "": {
++      "name": "playwrigh-luavt",
++      "version": "1.0.0",
++      "license": "ISC",
++      "devDependencies": {
++        "@playwright/test": "^1.56.1",
++        "@types/node": "^24.10.0"
++      }
++    },
++    "node_modules/@playwright/test": {
++      "version": "1.56.1",
++      "resolved": "https://registry.npmjs.org/@playwright/test/-/test-1.56.1.tgz",
++      "integrity": "sha512-vSMYtL/zOcFpvJCW71Q/OEGQb7KYBPAdKh35WNSkaZA75JlAO8ED8UN6GUNTm3drWomcbcqRPFqQbLae8yBTdg==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "dependencies": {
++        "playwright": "1.56.1"
++      },
++      "bin": {
++        "playwright": "cli.js"
++      },
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/@types/node": {
++      "version": "24.10.0",
++      "resolved": "https://registry.npmjs.org/@types/node/-/node-24.10.0.tgz",
++      "integrity": "sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "undici-types": "~7.16.0"
++      }
++    },
++    "node_modules/fsevents": {
++      "version": "2.3.2",
++      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz",
++      "integrity": "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==",
++      "dev": true,
++      "hasInstallScript": true,
++      "license": "MIT",
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
++      }
++    },
++    "node_modules/playwright": {
++      "version": "1.56.1",
++      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.56.1.tgz",
++      "integrity": "sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "dependencies": {
++        "playwright-core": "1.56.1"
++      },
++      "bin": {
++        "playwright": "cli.js"
++      },
++      "engines": {
++        "node": ">=18"
++      },
++      "optionalDependencies": {
++        "fsevents": "2.3.2"
++      }
++    },
++    "node_modules/playwright-core": {
++      "version": "1.56.1",
++      "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.56.1.tgz",
++      "integrity": "sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "bin": {
++        "playwright-core": "cli.js"
++      },
++      "engines": {
++        "node": ">=18"
++      }
++    },
++    "node_modules/undici-types": {
++      "version": "7.16.0",
++      "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-7.16.0.tgz",
++      "integrity": "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==",
++      "dev": true,
++      "license": "MIT"
++    }
++  }
++}
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..810cecb
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,15 @@
++{
++  "name": "playwrigh-luavt",
++  "version": "1.0.0",
++  "description": "",
++  "main": "index.js",
++  "scripts": {},
++  "keywords": [],
++  "author": "",
++  "license": "ISC",
++  "type": "commonjs",
++  "devDependencies": {
++    "@playwright/test": "^1.56.1",
++    "@types/node": "^24.10.0"
++  }
++}
+diff --git a/page/loginPage.js b/page/loginPage.js
+new file mode 100644
+index 0000000..962ca4f
+--- /dev/null
++++ b/page/loginPage.js
+@@ -0,0 +1,5 @@
++export class LoginPage {
++
++
++
++}
+\ No newline at end of file
+diff --git a/playwright.config.ts b/playwright.config.ts
+new file mode 100644
+index 0000000..6dfc0d9
+--- /dev/null
++++ b/playwright.config.ts
+@@ -0,0 +1,79 @@
++import { defineConfig, devices } from '@playwright/test';
++
++/**
++ * Read environment variables from file.
++ * https://github.com/motdotla/dotenv
++ */
++// import dotenv from 'dotenv';
++// import path from 'path';
++// dotenv.config({ path: path.resolve(__dirname, '.env') });
++
++/**
++ * See https://playwright.dev/docs/test-configuration.
++ */
++export default defineConfig({
++  testDir: './tests',
++  /* Run tests in files in parallel */
++  fullyParallel: true,
++  /* Fail the build on CI if you accidentally left test.only in the source code. */
++  forbidOnly: !!process.env.CI,
++  /* Retry on CI only */
++  retries: process.env.CI ? 2 : 0,
++  /* Opt out of parallel tests on CI. */
++  workers: process.env.CI ? 1 : undefined,
++  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
++  reporter: 'html',
++  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
++  use: {
++    /* Base URL to use in actions like `await page.goto('')`. */
++    // baseURL: 'http://localhost:3000',
++
++    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
++    trace: 'on-first-retry',
++  },
++
++  /* Configure projects for major browsers */
++  projects: [
++    {
++      name: 'chromium',
++      use: { ...devices['Desktop Chrome'] },
++    },
++
++    {
++      name: 'firefox',
++      use: { ...devices['Desktop Firefox'] },
++    },
++
++    {
++      name: 'webkit',
++      use: { ...devices['Desktop Safari'] },
++    },
++
++    /* Test against mobile viewports. */
++    // {
++    //   name: 'Mobile Chrome',
++    //   use: { ...devices['Pixel 5'] },
++    // },
++    // {
++    //   name: 'Mobile Safari',
++    //   use: { ...devices['iPhone 12'] },
++    // },
++
++    /* Test against branded browsers. */
++    // {
++    //   name: 'Microsoft Edge',
++    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
++    // },
++    // {
++    //   name: 'Google Chrome',
++    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
++    // },
++  ],
++
++  /* Run your local dev server before starting the tests */
++  // webServer: {
++  //   command: 'npm run start',
++  //   url: 'http://localhost:3000',
++  //   reuseExistingServer: !process.env.CI,
++  // },
++});
+diff --git a/tests/BTTHnentang.spec.ts b/tests/BTTHnentang.spec.ts
+new file mode 100644
+index 0000000..a97310c
+--- /dev/null
++++ b/tests/BTTHnentang.spec.ts
+@@ -0,0 +1,8 @@
++import { test, expect } from '@playwright/test';
++test('test search data ', async ({ page }) => {
++  await page.goto('https://www.w3schools.com/');
++  await page.getByRole('textbox', { name: 'Search our tutorials' }).click();
++  await page.getByRole('textbox', { name: 'Search our tutorials' }).fill('html list');
++  await page.getByRole('textbox', { name: 'Search our tutorials' }).press('Enter');
++  await expect(page).toHaveURL('https://www.w3schools.com/html/html_lists.asp');
++});
+\ No newline at end of file
+diff --git a/tests/Class.spec.ts b/tests/Class.spec.ts
+new file mode 100644
+index 0000000..1780c00
+--- /dev/null
++++ b/tests/Class.spec.ts
+@@ -0,0 +1,51 @@
++import { test, expect } from '@playwright/test';
++interface IUser {
++    name: string;
++    email: string;
++    isAdmin: boolean;
++}
++class  User implements IUser{
++    constructor(public name: string, public email: string, public isAdmin: boolean
++    ){}
++    getinFo():string {
++        return `User: ${this.name}, Email: ${this.email}, Admin: ${this.isAdmin}`;
++    }
++}
++export class AdminUser extends User {
++  deleteUser(user: User): string {
++    return `Admin ${this.name} deleted user ${user.name}`;
++  }
++}
++test('check class', async ({  }) => {
++const user = new User('Lua', 'vuthilua96nb@gmail.com', true);
++ console.log(user.getinFo());
++}
++);
++
++test('AdminUser can delete users and list info', async () => {
++// Tạo instance User và AdminUser
++const user1 = new User('Lua', 'lua@example.com', false);
++const user2 = new User('Vu', 'vu@example.com', false);
++const admin = new AdminUser('Admin', 'admin@example.com', true);
++
++
++// Tạo mảng users
++const users: User[] = [user1, user2, admin];
++
++
++// Duyệt mảng và lấy info
++const infos = users.map(u => u.getinFo());
++console.log(infos);
++
++
++// Kiểm tra thông tin chính xác
++expect(infos).toContain('User: Lua, Email: lua@example.com, Admin: false');
++expect(infos).toContain('User: Vu, Email: vu@example.com, Admin: false');
++expect(infos).toContain('User: Admin, Email: admin@example.com, Admin: true');
++
++
++// Kiểm tra Admin xóa user
++const deleteMessage = admin.deleteUser(user1);
++console.log(deleteMessage);
++expect(deleteMessage).toBe('Admin Admin deleted user Lua');
++});
+\ No newline at end of file
+diff --git a/tests/HTMLbasic.spec.ts b/tests/HTMLbasic.spec.ts
+new file mode 100644
+index 0000000..be4c243
+--- /dev/null
++++ b/tests/HTMLbasic.spec.ts
+@@ -0,0 +1,49 @@
++import { test, expect } from '@playwright/test';
++test('test', async ({ page }) => {
++    await page.goto('https://material.playwrightvn.com/01-xpath-register-page.html');
++    //fill textbox username
++    await page.getByRole('textbox', { name: 'Username:' }).click();
++    await page.getByRole('textbox', { name: 'Username:' }).fill('vũ thị lụa');
++    //fill textbox email
++    await page.getByRole('textbox', { name: 'Email:' }).click();
++    await page.getByRole('textbox', { name: 'Email:' }).fill('vu.thi.lua@sun-asterisk.com');
++    //select radio
++    await page.getByRole('radio', { name: 'Female' }).check();
++    await expect(page.getByRole('radio', { name: 'Female' })).toBeChecked();
++    //select checkbox
++    await page.getByRole('checkbox', { name: 'Reading' }).check();
++    await expect(page.getByRole('checkbox', { name: 'Reading' })).toBeChecked();
++    //select dropdown
++    await page.getByLabel('Interests:').selectOption('music');
++    const select = await page.getByLabel('Interests:').inputValue();
++    await expect(select).toBe('music');
++
++    await page.getByLabel('Country:').selectOption('canada');
++    const selectcontry = await page.getByLabel('Country:').inputValue();
++    await expect(selectcontry).toBe('canada');
++
++    // fill date of birth
++    await page.getByRole('textbox', { name: 'Date of Birth:' }).fill('1996-10-26');
++    await expect(page.getByRole('textbox', { name: 'Date of Birth:' })).toHaveValue('1996-10-26');
++
++    //click register
++    await page.getByRole('button', { name: 'Register' }).click();
++
++     const lastRow = page.locator('#userTable tbody tr').last();
++
++// Username nằm ở td thứ 2 (index 1)
++await expect(lastRow.locator('td').nth(1)).toHaveText('vũ thị lụa');
++
++// Email nằm ở td thứ 3 (index 2)
++await expect(lastRow.locator('td').nth(2)).toHaveText('vu.thi.lua@sun-asterisk.com');
++
++// Thông tin khác (Gender, Hobbies, Country, DOB) nằm ở td thứ 4 (index 3)
++await expect(lastRow.locator('td').nth(3)).toContainText('Gender: female');
++await expect(lastRow.locator('td').nth(3)).toContainText('Hobbies: reading');
++await expect(lastRow.locator('td').nth(3)).toContainText('Country: canada');
++await expect(lastRow.locator('td').nth(3)).toContainText('Date of Birth: 1996-10-26');
++
++// Actions nằm ở td thứ 5 (index 4) nếu cần
++
++});
++
+diff --git a/tests/basic.spec.ts b/tests/basic.spec.ts
+new file mode 100644
+index 0000000..c432ef2
+--- /dev/null
++++ b/tests/basic.spec.ts
+@@ -0,0 +1,57 @@
++import { test, expect } from '@playwright/test';
++
++
++interface IUser {
++    name: string;
++    email: string;
++    isAdmin: boolean;
++}
++
++
++
++  function checkAge(age: number): void {
++    if (age >= 18) {
++        console.log("Adult");
++    }
++    else {
++        console.log("under 18");
++    }
++}
++
++
++
++
++test('has title', async ({ page }) => {
++  let username: string = "vũ thị lụa";
++  let age: number = 30;
++  let isActive: boolean = true;
++  let roles: string[] = ["admin", "editor"];
++
++  let user: {
++    name: string;
++    email: string;
++    isAdmin: boolean;
++  } = {
++    name: username,
++    email: "vu.thi.lua@sun-asterisk.com", isAdmin: true,
++  };
++
++  console.log(`User: ${user.name} (email: ${user.email}) , roles: ${roles.join(
++    " , "
++  )}, Active: ${isActive}`
++  );
++}
++);
++
++
++// check age
++test('check age', async ({  }) => {
++  checkAge(16);
++});
++
++
++
++
++
++
++
+diff --git a/tests/example.spec.ts b/tests/example.spec.ts
+new file mode 100644
+index 0000000..54a906a
+--- /dev/null
++++ b/tests/example.spec.ts
+@@ -0,0 +1,18 @@
++import { test, expect } from '@playwright/test';
++
++test('has title', async ({ page }) => {
++  await page.goto('https://playwright.dev/');
++
++  // Expect a title "to contain" a substring.
++  await expect(page).toHaveTitle(/Playwright/);
++});
++
++test('get started link', async ({ page }) => {
++  await page.goto('https://playwright.dev/');
++
++  // Click the get started link.
++  await page.getByRole('link', { name: 'Get started' }).click();
++
++  // Expects page to have a heading with the name of Installation.
++  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
++});
+diff --git a/tests/function.spec.ts b/tests/function.spec.ts
+new file mode 100644
+index 0000000..28c9af6
+--- /dev/null
++++ b/tests/function.spec.ts
+@@ -0,0 +1,21 @@
++import { test, expect } from '@playwright/test';
++test('check function', async ({  }) => {
++  function sum(a: number, b: number): number {
++    return a + b;
++}
++console.log(sum(8, 12));
++
++//function check tích
++const multiple = (a: number, b: number): number => {
++    return a * b;
++}
++console.log(multiple(9, 6));
++
++// function trả về hello
++function greet(name: string, role: string = "Guest"): void {
++    console.log(`hello.${name} , your role is ${role}`);
++    }
++
++  greet("lụa");
++ greet("vũ thị" , "admin");
++});
+diff --git a/tests/sauce.loin.spec.ts b/tests/sauce.loin.spec.ts
+new file mode 100644
+index 0000000..54607a4
+--- /dev/null
++++ b/tests/sauce.loin.spec.ts
+@@ -0,0 +1,60 @@
++import { test, expect } from '@playwright/test';
++
++test('Login succcess page sauce', async ({ page }) => {
++  await page.goto('https://www.saucedemo.com/');
++  await page.locator('[data-test="username"]').click();
++  await page.locator('[data-test="username"]').fill('standard_user');
++  await page.locator('[data-test="password"]').click();
++  await page.locator('[data-test="password"]').fill('secret_sauce');
++  await page.locator('[data-test="login-button"]').click();
++
++  await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++});
++
++test('Login fai  page sauce', async ({ page }) => {
++  await page.goto('https://www.saucedemo.com/');
++  await page.locator('[data-test="login-button"]').click();
++  
++  await expect(
++   page.getByText("Epic sadface: Username is required")
++    ).toBeVisible();
++});
++
++test('test password is requird', async ({ page }) => {
++  await page.goto('https://www.saucedemo.com/');
++  await page.locator('[data-test="username"]').click();
++  await page.locator('[data-test="username"]').fill('standard_user');
++  await page.locator('[data-test="login-button"]').click();
++  await expect(
++   page.getByText("Epic sadface: Password is required")
++    ).toBeVisible();
++});
++
++test('test with user password fail', async ({ page }) => {
++  await page.goto('https://www.saucedemo.com/');
++  await page.locator('[data-test="username"]').click();
++  await page.locator('[data-test="username"]').fill('a');
++  await page.locator('[data-test="password"]').click();
++  await page.locator('[data-test="password"]').fill('aaaaa');
++  await page.locator('[data-test="login-button"]').click();
++await expect(
++   page.getByText("Epic sadface: Username and password do not match any user in this service")
++    ).toBeVisible();
++
++});
++
++test('test with user this user has been locked out', async ({ page }) => {
++  await page.goto('https://www.saucedemo.com/');
++  await page.locator('[data-test="username"]').click();
++  await page.locator('[data-test="username"]').fill('locked_out_user');
++  await page.locator('[data-test="password"]').click();
++  await page.locator('[data-test="password"]').fill('secret_sauce');
++  await page.locator('[data-test="login-button"]').click();
++await expect(
++   page.getByText("Epic sadface: Sorry, this user has been locked out.")
++    ).toBeVisible();
++
++});
++
++
++
+diff --git a/tests/sauce.menu.spec.ts b/tests/sauce.menu.spec.ts
+new file mode 100644
+index 0000000..1a38164
+--- /dev/null
++++ b/tests/sauce.menu.spec.ts
+@@ -0,0 +1,149 @@
++import { test, expect } from '@playwright/test';
++test('Click about', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.getByRole('button', { name: 'Open Menu' }).click();
++    await page.locator('[data-test="about-sidebar-link"]').click();
++    await expect(page).toHaveURL('https://saucelabs.com/');
++
++
++});
++
++test('Click logout', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.getByRole('button', { name: 'Open Menu' }).click();
++    await page.locator('[data-test="logout-sidebar-link"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/');
++
++});
++
++test('Click icon x', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.getByRole('button', { name: 'Open Menu' }).click();
++    await page.getByRole('button', { name: 'Close Menu' }).click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++
++
++});
++
++
++//case check when select data on dropdown
++test('check data on dropdown', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    //await page.locator('[data-test="password"]').press('Enter');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.locator('[data-test="product-sort-container"]').selectOption('za');
++    const sortDropdown = page.locator('[data-test="product-sort-container"]');
++    await sortDropdown.selectOption('za');
++    await expect(sortDropdown).toHaveValue('za');
++});
++
++
++test('select data on dropdown', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    //await page.locator('[data-test="password"]').press('Enter');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.locator('[data-test="product-sort-container"]').selectOption('za');
++    const sortDropdown = page.locator('[data-test="product-sort-container"]');
++    await sortDropdown.selectOption('hilo');
++    await expect(sortDropdown).toHaveValue('hilo');
++    await expect(page.locator(".inventory_item_price").first()).toHaveText("$49.99");
++
++    const prices = await page.locator(".inventory_item_price").allTextContents();
++    const numericPrices = prices.map((p) => parseFloat(p.replace("$", "")));
++
++    const sortedHighToLow = [...numericPrices].sort((a, b) => b - a);
++
++    expect(numericPrices).toEqual(sortedHighToLow);
++
++});
++
++
++// case check name button khi click butotn Add to card
++test('add product to cart', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    //await page.locator('[data-test="password"]').press('Enter');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++
++    const addButton = page.locator('[data-test="add-to-cart-sauce-labs-onesie"]');
++    const removebutton = page.locator('[data-test="remove-sauce-labs-onesie"]');
++    await addButton.click();
++    await expect(removebutton).toHaveText("Remove");
++    await removebutton.click();
++    await expect(addButton).toHaveText("Add to cart");
++
++
++});
++
++// case check khi add san pham vao gio hang
++test('show data after add to cart', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
++
++    const cartBage = page.locator('[data-test="shopping-cart-badge"]');
++    await expect(cartBage).toHaveText("1");
++    await page.locator('[data-test="shopping-cart-link"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/cart.html');
++
++    const cartitem = page.locator('.cart_item');
++    await expect(cartitem).toHaveCount(1);
++    await expect(page.locator('[data-test="inventory-item-name"]')).toHaveText("Sauce Labs Backpack");
++});
++
++// click button continue shopping trong màn giỏ hàng
++test('continue flow shopping', async ({ page }) => {
++    await page.goto('https://www.saucedemo.com/');
++    await page.locator('[data-test="username"]').click();
++    await page.locator('[data-test="username"]').fill('standard_user');
++    await page.locator('[data-test="password"]').click();
++    await page.locator('[data-test="password"]').fill('secret_sauce');
++    await page.locator('[data-test="login-button"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++    await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
++
++    const cartBage = page.locator('[data-test="shopping-cart-badge"]');
++    await expect(cartBage).toHaveText("1");
++    await page.locator('[data-test="shopping-cart-link"]').click();
++    await expect(page).toHaveURL('https://www.saucedemo.com/cart.html');
++
++      await page.locator('[data-test="continue-shopping"]').click();
++      await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
++});
+\ No newline at end of file
+diff --git a/tests/test-1.spec.ts b/tests/test-1.spec.ts
+new file mode 100644
+index 0000000..42759c8
+--- /dev/null
++++ b/tests/test-1.spec.ts
+@@ -0,0 +1,6 @@
++import { test, expect } from '@playwright/test';
++
++test('test', async ({ page }) => {
++  await page.goto('https://www.saucedemo.com/');
++  await page.locator('[data-test="login-button"]').click();
++});
+\ No newline at end of file
+diff --git a/tests/thisPractice.spec.ts b/tests/thisPractice.spec.ts
+new file mode 100644
+index 0000000..23a3d80
+--- /dev/null
++++ b/tests/thisPractice.spec.ts
+@@ -0,0 +1,29 @@
++import { test, expect } from '@playwright/test';
++class Counter {
++  // Thuộc tính count, mặc định = 0
++  count: number = 0;
++
++  // Tăng count lên 1 và in ra màn hình
++  increment() {
++    this.count++; // "this" dùng để tham chiếu tới thuộc tính count của class
++    console.log(`Count is now: ${this.count}`);
++  }
++
++  // Đưa count về 0 và in thông báo
++  reset() {
++    this.count = 0;
++    console.log("Counter reset");
++  }
++}
++
++test('thisParactice', async ({  }) => {
++  const counter = new Counter();
++
++// Gọi các method liên tiếp
++counter.increment(); 
++counter.increment(); 
++counter.reset(); 
++
++
++}
++);
+\ No newline at end of file
+-- 
+2.51.2.windows.1
+
