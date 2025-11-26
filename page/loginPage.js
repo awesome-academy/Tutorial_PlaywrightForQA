@@ -25,18 +25,18 @@
 
 // module.exports = { LoginPage };
 
-class loginpage{
+class LoginPage{
     constructor(page) {
         this.page= page;
-        this.usernameinput= page.locator('#username');
-        this.passwordinput= page.locator('#password');
-        this.buttonlogin= page.locator('#login-button');
+        this.usernameinput= page.locator('[data-test="username"]');
+        this.passwordinput= page.locator('[data-test="password"]');
+        this.buttonlogin= page.locator('[data-test="login-button"]');
 
         this.errormessage= page.locator('[data-test="error"]');
         
     }
     async goto(){
-        await this.page.goto('https://www.saucedemo.com');
+        await this.page.goto('https://www.saucedemo.com/');
     }
 
     async login(username,password){
@@ -46,8 +46,8 @@ class loginpage{
     }
 
     async geterrormessage(){
-        return await this.errormessage.texContent();
+        return await this.errormessage.textContent();
     }
 
 }
-module.exports = {loginpage};
+module.exports = {LoginPage};

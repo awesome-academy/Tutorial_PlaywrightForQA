@@ -14,10 +14,10 @@ test('Login succcess page sauce', async ({ page }) => {
 test('Login fai  page sauce', async ({ page }) => {
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="login-button"]').click();
-  
+
   await expect(
-   page.getByText("Epic sadface: Username is required")
-    ).toBeVisible();
+    page.getByText("Epic sadface: Username is required")
+  ).toBeVisible();
 });
 
 test('test password is required', async ({ page }) => {
@@ -45,9 +45,9 @@ test('test with user password fail', async ({ page }) => {
   await page.locator('[data-test="password"]').click();
   await page.locator('[data-test="password"]').fill('aaaaa');
   await page.locator('[data-test="login-button"]').click();
-await expect(
-   page.getByText("Epic sadface: Username and password do not match any user in this service")
-    ).toBeVisible();
+  await expect(
+    page.getByText("Epic sadface: Username and password do not match any user in this service")
+  ).toBeVisible();
 
 });
 
@@ -58,9 +58,9 @@ test('test with user this user has been locked out', async ({ page }) => {
   await page.locator('[data-test="password"]').click();
   await page.locator('[data-test="password"]').fill('secret_sauce');
   await page.locator('[data-test="login-button"]').click();
-await expect(
-   page.getByText("Epic sadface: Sorry, this user has been locked out.")
-    ).toBeVisible();
+  await expect(
+    page.getByText("Epic sadface: Sorry, this user has been locked out.")
+  ).toBeVisible();
 
 });
 
